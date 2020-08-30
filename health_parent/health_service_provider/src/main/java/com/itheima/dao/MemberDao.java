@@ -3,8 +3,10 @@ package com.itheima.dao;
 import com.github.pagehelper.Page;
 import com.itheima.pojo.Member;
 import org.apache.ibatis.annotations.Param;
+import com.itheima.pojo.Menu;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MemberDao {
     public List<Member> findAll();

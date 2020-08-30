@@ -101,4 +101,9 @@ public class OrderServiceImpl implements OrderService {
         }
         return map;
     }
+    //根据日期查询预约信息
+    @Override
+    public List<Map> findEveryDayCountBydate(Map<String, Object> date) {
+        return orderDao.findEveryDayCountBydate(date);
+    }
 }

@@ -4,13 +4,16 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.constant.MessageConstant;
 import com.itheima.entity.Result;
 import com.itheima.service.MemberService;
+import com.itheima.service.OrderService;
 import com.itheima.service.ReportService;
 import com.itheima.service.SetmealService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.tools.attach.HotSpotVirtualMachine;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -175,5 +179,91 @@ public class ReportController {
         }catch (Exception e){
             return new Result(false, MessageConstant.GET_BUSINESS_REPORT_FAIL, null);
         }
+
+        /**
+         * 每日预约数、和到诊数统计
+         * getAppointmentsAndVisitsDya
+         */
+    }
+
+    /**
+     * 获取每天预约、到诊数量
+     * @param date
+     * @return
+     */
+    @Reference
+    private OrderService orderService;
+    @RequestMapping("/getAppointmentsAndVisitDay")
+    public Result getAppointmentsAndVisitDay(@RequestBody Map<String,Object> date) throws ParseException {
+       /* Map<String,Map<String,Object>> result = new HashMap<>();
+
+        Map<String,Object> appointments= new HashMap<>();
+        List<Integer> appointmentsCount = new ArrayList<>();
+        appointmentsCount.add(100);
+        appointmentsCount.add(110);
+        appointmentsCount.add(120);
+        appointmentsCount.add(120);
+        appointments.put("appointmentsCount",appointmentsCount);
+        appointments.put("name","到诊数量");
+
+        Map<String,Object> visits= new HashMap<>();
+        List<Integer> visitsCount = new ArrayList<>();
+        visitsCount.add(50);
+        visitsCount.add(60);
+        visitsCount.add(70);
+        visitsCount.add(80);
+        visits.put("visitsCount",visitsCount);
+        visits.put("name","预约数量");
+
+        Map<String,Object> months= new HashMap<>();
+        //获取请求日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = sdf.parse((String) date.get("start"));
+        Date end = sdf.parse((String) date.get("end"));
+        long day = (end.getTime()-start.getTime())/(24*60*60*1000);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+        //遍历开始至结束日期封装为list
+        List<String> month = new ArrayList<>();
+        month.add(sdf.format(calendar.getTime()));
+        for (int i = 0; i < day; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            month.add(sdf.format(calendar.getTime()));
+        }
+        months.put("month",month);
+        result.put("months",months);
+
+        List<Map> list = orderService.findEveryDayCountBydate(date);
+
+        result.put("appointments",appointments);
+        result.put("visits",visits);
+*/
+
+
+        Map<String,Map<String,Object>> result = new HashMap<>();
+        List<Map> list = orderService.findEveryDayCountBydate(date);
+        Map<String,Object> appointments= new HashMap<>();
+        List<Object> appointmentsCount = new ArrayList<>();
+        Map<String,Object> visits= new HashMap<>();
+        List<Object> visitsCount = new ArrayList<>();
+        Map<String,Object> months= new HashMap<>();
+        List<String> month = new ArrayList<>();
+
+        for (Map map : list) {
+            appointmentsCount.add((Object) map.get("appointmentsCount"));
+            visitsCount.add((Object) map.get("visitsCount"));
+            month.add( map.get("month")+"");
+        }
+
+        appointments.put("appointmentsCount",appointmentsCount);
+        appointments.put("name","到诊数量");
+        visits.put("visitsCount",visitsCount);
+        visits.put("name","预约数量");
+        months.put("month",month);
+
+        result.put("months",months);
+        result.put("appointments",appointments);
+        result.put("visits",visits);
+        return new Result(true,"获取每日数据成功",result);
     }
 }

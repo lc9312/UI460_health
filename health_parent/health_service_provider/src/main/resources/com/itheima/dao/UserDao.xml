@@ -5,4 +5,5 @@
     <select id="findByUsername" parameterType="string" resultType="com.itheima.pojo.User">
         select * from t_user where username = #{username}
     </select>
+
 </mapper>
