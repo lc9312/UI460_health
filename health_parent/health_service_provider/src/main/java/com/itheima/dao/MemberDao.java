@@ -5,6 +5,7 @@ import com.itheima.pojo.Member;
 import com.itheima.pojo.Menu;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MemberDao {
     public List<Member> findAll();
@@ -18,5 +19,4 @@ public interface MemberDao {
     public Integer findMemberCountByDate(String date);
     public Integer findMemberCountAfterDate(String date);
     public Integer findMemberTotalCount();
-    List<Menu> findAllModuleByUsername(String username);
 }

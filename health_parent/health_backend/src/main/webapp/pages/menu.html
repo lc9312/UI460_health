@@ -32,11 +32,11 @@
                 <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
             </div>
             <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
-                <el-table-column type="name" label="菜单名称" align="center"></el-table-column>
+                <el-table-column prop="title" label="菜单名称" align="center"></el-table-column>
                 <el-table-column prop="linkUrl" label="访问路径" align="center"></el-table-column>
-                <el-table-column prop="name" label="路径级别" align="center"></el-table-column>
-                <el-table-column prop="age" label="自关联id" align="center"></el-table-column>
-                <el-table-column prop="remark" label="菜单级别" align="center"></el-table-column>
+                <el-table-column prop="priority" label="路径级别" align="center"></el-table-column>
+                <el-table-column prop="parentMenuId" label="自关联id" align="center"></el-table-column>
+                <el-table-column prop="level" label="菜单级别" align="center"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -61,39 +61,52 @@
                              label-width="100px">
                         <el-row>
                             <el-col :span="12">
-                                <el-form-item label="菜单名称" prop="code">
-                                    <el-input v-model="formData.code"/>
+                                <el-form-item label="菜单名称" prop="name">
+                                    <el-input v-model="formData.name"/>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="访问路径" prop="name">
-                                    <el-input v-model="formData.name"/>
+                                <el-form-item label="访问路径" prop="linkUrl">
+                                    <el-input v-model="formData.linkUrl"/>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                             <el-col :span="12">
-                                <el-form-item label="访问级别">
-                                    <el-select v-model="formData.type">
+                                <el-form-item label="路径级别">
+                                    <el-select v-model="formData.path">
                                     </el-select>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item label="优先级">
-                                    <el-input v-model="formData.price"/>
+                                    <el-input v-model="formData.priority"/>
                                 </el-form-item>
                             </el-col>
+                        </el-row>
+                        </el-row>
+                        <el-col :span="12">
+                            <el-form-item label="自关联Id">
+                                <el-select v-model="formData.parentMenuId">
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="菜单级别">
+                                <el-input v-model="formData.level"/>
+                            </el-form-item>
+                        </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="24">
                                 <el-form-item label="图标">
-                                    <el-input v-model="formData.remark" type="textarea"></el-input>
+                                    <el-input v-model="formData.icon" type="textarea"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="24">
                                 <el-form-item label="注意事项">
-                                    <el-input v-model="formData.attention" type="textarea"></el-input>
+                                    <el-input v-model="formData.description" type="textarea"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -112,45 +125,61 @@
                              label-width="100px">
                         <el-row>
                             <el-col :span="12">
-                                <el-form-item label="菜单名称" prop="code">
-                                    <el-input v-model="formData.code"/>
+                                <el-form-item label="菜单名称" prop="name">
+                                    <el-input v-model="formData.name"/>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="访问路径" prop="name">
-                                    <el-input v-model="formData.name"/>
+                                <el-form-item label="访问路径" prop="linkUrl">
+                                    <el-input v-model="formData.linkUrl"/>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-col :span="12">
-                            <el-form-item label="访问级别">
-                                <el-select v-model="formData.type">
+                            <el-form-item label="路径级别">
+                                <el-select v-model="formData.path">
                                 </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="优先级">
-                                <el-input v-model="formData.price"/>
+                                <el-input v-model="formData.priority"/>
+                            </el-form-item>
+                        </el-col>
+                        </el-row>
+                        </el-row>
+                        <el-col :span="12">
+                            <el-form-item label="自关联Id">
+                                <el-select v-model="formData.parentMenuId">
+                                    <el-cascader :options="options" :show-all-levels="false">
+
+                                    </el-cascader>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="菜单级别">
+                                <el-input v-model="formData.level"/>
                             </el-form-item>
                         </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="24">
                                 <el-form-item label="图标">
-                                    <el-input v-model="formData.remark" type="textarea"></el-input>
+                                    <el-input v-model="formData.icon" type="textarea"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="24">
                                 <el-form-item label="注意事项">
-                                    <el-input v-model="formData.attention" type="textarea"></el-input>
+                                    <el-input v-model="formData.description" type="textarea"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
                         <el-button type="primary" @click="handleAdd()">确定</el-button>
                     </div>
                 </el-dialog>
@@ -193,7 +222,7 @@
                 //进行表单检验
                 this.$refs['dataEditForm'].validate((valid) => {
                     if (valid) {//表单检验通过，可以提交数据
-                        axios.post("/checkitem/edit.do", this.formData).then((resp) => {
+                        axios.post("/menu/edit.do", this.formData).then((resp) => {
                             if (resp.data.flag) {
                                 this.$message({
                                     type: 'success',
@@ -221,7 +250,7 @@
                 this.$refs['dataAddForm'].validate((valid) => {
                     if (valid) {
                         //表单校验通过，发送ajax请求,将录入的数据提交后台进行处理
-                        axios.post("/checkitem/add.do", this.formData).then((resp) => {
+                        axios.post("/menu/add.do", this.formData).then((resp) => {
                             //关闭新增窗口
                             this.dialogFormVisible = false;
                             if (resp.data.flag) {//执行成功
@@ -253,7 +282,7 @@
                     pageSize: this.pagination.pageSize,
                     queryString: this.pagination.queryString
                 };
-                axios.post("/checkitem/findPage.do", param).then((resp) => {
+                axios.post("/menu/findPage.do", param).then((resp) => {
                     //解析Controller响应回的数据，
                     this.dataList = resp.data.rows;
                     this.pagination.total = resp.data.total;
@@ -267,16 +296,26 @@
             },
             // 弹出添加窗口
             handleCreate() {
-                //弹出新增窗口
-                this.dialogFormVisible = true;
                 this.resetForm();
+                this.dialogFormVisible = true;
+                //重置
+                this.checkitemIds = [];
+                //发送ajax请求查询所有检查项信息
+                axios.get("/checkitem/findAll.do").then((res)=> {
+                    if(res.data.flag){
+                        //将检查项列表数据赋值给模型数据用于页面表格展示
+                        this.tableData = res.data.data;
+                    }else{
+                        this.$message.error(res.data.message);
+                    }
+                });
             },
             // 弹出编辑窗口
             handleUpdate(row) {
                 //弹出编辑窗口
                 this.dialogFormVisible4Edit = true;
                 //回显数据,发送ajax请求，根据id查询检查项数据。回显到窗口表格中
-                axios.get("/checkitem/findById.do?id=" + row.id).then((resp) => {
+                axios.get("/menu/findById.do?id=" + row.id).then((resp) => {
                     if (resp.data.flag) {//进行数据回显，基于Vue的数据绑定实现
                         this.formData = resp.data.data
                     } else {//查询失败
@@ -297,7 +336,7 @@
                     type: 'warning'
                 }).then(() => {
                     //用户点击了确定按钮,发送ajax请求，将检查项id提交到Controller进行处理
-                    axios.get("/checkitem/delete.do?id=" + row.id).then((resp) => {
+                    axios.get("/menu/delete.do?id=" + row.id).then((resp) => {
                         if (resp.data.flag) {//表示执行成功
                             //弹出成提示
                             this.$message({

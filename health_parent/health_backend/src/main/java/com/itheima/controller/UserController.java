@@ -27,10 +27,10 @@ public class UserController {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Map map = new HashMap();
             //根据用户名称获取角色对应的所有模块
-            List<Menu> menuList = userService.findAllModuleByUsername(user.getUsername());
+            List<Map> menuList = userService.findAllModuleByUsername(user.getUsername());
             map.put("menuList", menuList);
             map.put("username", user.getUsername());
-            return new Result(true, MessageConstant.GET_MENU_LIST_SUCCESS, user.getUsername());
+            return new Result(true, MessageConstant.GET_MENU_LIST_SUCCESS,map);
         }catch (Exception e){
             return new Result(false, MessageConstant.GET_MENU_LIST_FAIL);
         }
