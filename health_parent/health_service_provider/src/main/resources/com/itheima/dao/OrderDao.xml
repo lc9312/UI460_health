@@ -86,4 +86,11 @@
         order by setmeal_count desc
         limit 0,4
     </select>
+
+    <select id="findEveryDayCountBydate" resultType="map" parameterType="map">
+      SELECT orderDate month, COUNT(id) visitsCount , SUM(CASE WHEN orderStatus='已到诊' THEN 1 ELSE 0 END) appointmentsCount
+        FROM t_order
+        WHERE orderDate between #{start} and #{end}
+        GROUP BY orderDate;
+    </select>
 </mapper>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../plugins/echarts/echarts.min.js"></script>
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>统计分析<small>每日预约、到诊数量</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>统计分析</el-breadcrumb-item>
+                    <el-breadcrumb-item>每日预约、到诊数量</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <span class="demonstration">选择日期</span>
+            <el-date-picker
+                    v-model="value1"
+                    type="daterange"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy-MM-dd"
+                    @change="chooseTimeRange"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+            </el-date-picker>
+            <div class="app-container" >
+                <div class="box">
+                    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                    <div id="chart1" style="height:600px;"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el:"#app",
+            data: {
+                value1:[]
+            },
+            methods: {
+                chooseTimeRange() {
+                    //获取录入前后日期
+                    var date = {
+                        start : this.value1[0],
+                        end : this.value1[1]};
+                    console.log(date);
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart1 = echarts.init(document.getElementById('chart1'));
+                    // 使用刚指定的配置项和数据显示图表。
+                    //myChart.setOption(option);
+                    axios.post("/report/getAppointmentsAndVisitDay.do",date).then((res)=>{
+                        myChart1.setOption({
+                                title: {
+                                    text: '每日预约、到诊数量'
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data: [res.data.data.visits.name,res.data.data.appointments.name ]
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '4%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                toolbox: {
+                                    feature: {
+                                        saveAsImage: {}
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: res.data.data.months.month
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [
+                                    {
+                                        name: res.data.data.appointments.name,
+                                        type: 'line',
+                                        data: res.data.data.appointments.appointmentsCount
+                                    },
+                                    {
+                                        name: res.data.data.visits.name,
+                                        type: 'line',
+                                        data: res.data.data.visits.visitsCount
+                                    }
+                                ]
+                            });
+                    });
+                }
+            }
+        })
+    </script>
+</html>

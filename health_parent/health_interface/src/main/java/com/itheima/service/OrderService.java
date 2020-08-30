@@ -2,6 +2,7 @@ package com.itheima.service;
 
 import com.itheima.entity.Result;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,4 +15,6 @@ public interface OrderService {
 
     //根据id查询预约信息，包括体检人信息、套餐信息
     public Map findById(Integer id) throws Exception;
+    //根据日期查询预约信息
+    public List<Map> findEveryDayCountBydate(Map<String, Object> date);
 }
