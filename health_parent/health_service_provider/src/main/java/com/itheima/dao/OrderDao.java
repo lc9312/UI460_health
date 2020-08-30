@@ -22,4 +22,6 @@ public interface OrderDao {
     public Integer findVisitsCountAfterDate(String date);
 
     public List<Map> findHotSetmeal();
+
+    public List<Map> findEveryDayCountBydate(Map<String, Object> date);
 }
