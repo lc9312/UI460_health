@@ -40,4 +40,23 @@ public class MemberServiceImpl implements MemberService {
         }
         return list;
     }
+
+    // 更新会员基本信息
+    @Override
+    public void updateMemberMsg(Member member) {
+        memberDao.updateMemberMsg(member);
+    }
+
+    // 更新会员密码
+    @Override
+    public void updatePassword(String md5Pass, String phoneNumber) {
+        memberDao.updatePwdByPhone(phoneNumber,md5Pass);
+    }
+
+    // 变更会员手机
+    @Override
+    public void updateTel(String oldPhone, String newPhone) {
+        memberDao.updateTel(oldPhone,newPhone);
+    }
+
 }

@@ -95,4 +95,37 @@
     <select id="findMemberTotalCount" resultType="int">
         select count(id) from t_member
     </select>
+    <!--修改会员基本信息-->
+    <update id="updateMemberMsg" parameterType="com.itheima.pojo.Member">
+        update t_member
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="idCard != null">
+                idCard = #{idCard},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--根据电话号码修改用户密码-->
+    <update id="updatePwdByPhone" parameterType="string">
+        update t_member set password = #{password}  where phoneNumber = #{phoneNumber}
+    </update>
+    <!--变更会员手机-->
+    <update id="updateTel" parameterType="string">
+        update t_member set phoneNumber = #{newPhone}  where phoneNumber = #{oldPhone}
+    </update>
 </mapper>

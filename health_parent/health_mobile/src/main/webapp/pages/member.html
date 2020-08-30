@@ -12,6 +12,12 @@
     <title>健康档案</title>
 
     <link rel="stylesheet" href="../css/page-health-record.css" />
+    <script src="../plugins/jquery/dist/jquery.min.js"></script>
+    <script src="../plugins/healthmobile.js"></script>
+    <script src="../plugins/datapicker/datePicker.js"></script>
+    <script src="../plugins/vue/vue.js"></script>
+    <script src="../plugins/vue/axios-0.18.0.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#myNavbar" data-offset="150">
@@ -27,10 +33,22 @@
             <div class="text-link">
                 <ul class="list-box">
                     <li>
-                        <a href="health-recordDetail.html" class="link-page">
+                        <a href="member_common.html" class="link-page">
                 <i class="icon-baseinfo"><span class="path1"></span><span class="path2"></span></i>
                 <span>基本信息</span>
             </a>
+                    </li>
+                    <li>
+                        <a href="login_4pwd.html"  class="link-page">
+                            <i class="icon-family"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span></i>
+                            <span>密码设置</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="login_4tel.html" class="link-page">
+                            <i class="icon-family"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span></i>
+                            <span>电话号码修改</span>
+                        </a>
                     </li>
                     <li>
                         <a href="health-recordDetail.html" class="link-page">
@@ -56,6 +74,38 @@
     </div>
     <!-- 页面 css js -->
     <!-- <script src="health-index.js"></script> -->
-
-
+    <script>
+        var vue = new Vue({
+            el:'#app',
+            data:{
+                cookiename:"login_member_telephone",
+            },
+            methods:{
+                getCookie(name) { //获取指定名称的cookie值
+                    // (^| )name=([^;]*)(;|$),match[0]为与整个正则表达式匹配的字符串，match[i]为正则表达式捕获数组相匹配的数组；
+                    var arr = document.cookie.match(new RegExp("(^| )"+name+"=([^;]*)(;|$)"));
+                    if(arr != null) {
+                        console.log(arr);
+                        return unescape(arr[2]);
+                    }
+                    return null;
+                },
+                // 回到登录页页面
+                returnLoginHtml() {
+                    window.location.href="login.html";
+                },
+            },
+            mounted(){
+                // 获取cookie
+                var cookiedata = this.getCookie(this.cookiename);
+                console.log(cookiedata);
+                // cookie值不存在,则返回登录界面
+                if(cookiedata == null || cookiedata == ""){
+                    this.returnLoginHtml();
+                    return;
+                }
+            }
+        });
+    </script>
 </body>
+</html>

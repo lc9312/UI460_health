@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,user-scalable=no,minimal-ui">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../img/asset-favico.ico">
+        <title>登录</title>
+        <link rel="stylesheet" href="../css/page-health-login.css" />
+        <link rel="stylesheet" href="../plugins/elementui/index.css" />
+        <script src="../plugins/jquery/dist/jquery.min.js"></script>
+        <script src="../plugins/healthmobile.js"></script>
+        <script src="../plugins/vue/vue.js"></script>
+        <script src="../plugins/vue/axios-0.18.0.js"></script>
+        <script src="../plugins/elementui/index.js"></script>
+    </head>
+    <body data-spy="scroll" data-target="#myNavbar" data-offset="150">
+    <div class="app" id="app">
+        <!-- 页面头部 -->
+        <div class="top-header">
+            <span class="f-left"><i class="icon-back"></i></span>
+            <span class="center">传智健康</span>
+            <span class="f-right"><i class="icon-more"></i></span>
+        </div>
+        <div class="contentBox">
+            <div class="el-tree__empty-block" style="background-color: white">
+                <div style="margin-left: 20px" >密码修改</div>
+                <el-form  size="medium" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+                    <el-form-item label="密码" prop="pass" >
+                        <el-input style="width:80%"   type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" prop="checkPass">
+                        <el-input type="password" style="width: 80%" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </div>
+    </div>
+    </body>
+    <script>
+        var phoneNumber = getUrlParam("phoneNumber");
+    </script>
+    <script>
+        var vm = new Vue({
+            el:"#app",
+            data(){
+                var validatePass = (rule, value, callback) => {
+                    if (value === '') {
+                        callback(new Error('请输入密码'));
+                    } else {
+                        if (this.ruleForm.checkPass !== '') {
+                            this.$refs.ruleForm.validateField('checkPass');
+                        }
+                        callback();
+                    }
+                };
+                var validatePass2 = (rule, value, callback) => {
+                    if (value === '') {
+                        callback(new Error('请再次输入密码'));
+                    } else if (value !== this.ruleForm.pass) {
+                        callback(new Error('两次输入密码不一致!'));
+                    } else {
+                        callback();
+                    }
+                };
+                return {
+                    ruleForm: {
+                        pass: '',
+                        checkPass: '',
+                        age: ''
+                    },
+                    rules: {
+                        pass: [
+                            { validator: validatePass, trigger: 'blur' }
+                        ],
+                        checkPass: [
+                            { validator: validatePass2, trigger: 'blur' }
+                        ]
+                    }
+                };
+            },
+            methods: {
+                // 回到会员个人主页
+                returnMemberHtml() {
+                    window.location.href="member.html";
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            // alert('submit!');
+                            // 修改会员密码
+                            axios.post("/member/updatePassword.do?phoneNumber="+phoneNumber,this.ruleForm).then((response) => {
+                                if(response.data.flag){
+                                    //修改成功,跳转到上一页
+                                    this.$message.success(response.data.message+",3秒后返回健康档案!");
+                                    window.setTimeout(this.returnMemberHtml,3000);
+                                }else{
+                                    // 修改失败,跳转到上一页,并提示错误
+                                    this.$message.error(response.data.message+",3秒后返回健康档案!");
+                                    window.setTimeout(this.returnMemberHtml,3000);
+                                }
+                            });
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            }
+        })
+    </script>
+</html>
